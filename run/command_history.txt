@@ -1,0 +1,6 @@
+/locate biome minecraft:plains
+/tp @s -160 76 169
+/locate biome minecraft:plains
+/tp @s -30 88 187
+/weather thunder
+/weather clear
