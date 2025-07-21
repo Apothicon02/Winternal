@@ -3,9 +3,11 @@ package com.Apothic0n.Winternal.mixin;
 import com.Apothic0n.Winternal.Winternal;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.DoublePlantBlock;
 import net.minecraft.world.level.block.SnowyDirtBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -36,12 +38,17 @@ public class SnowAndFreezeFeatureMixin {
                     int i1 = worldgenlevel.getHeight(Heightmap.Types.WORLD_SURFACE_WG, k, l);
                     blockpos$mutableblockpos.set(k, i1, l);
                     blockpos$mutableblockpos1.set(blockpos$mutableblockpos).move(Direction.DOWN, 1);
-                    Biome biome = worldgenlevel.getBiome(blockpos$mutableblockpos).value();
 
                     BlockState blockstate = worldgenlevel.getBlockState(blockpos$mutableblockpos1);
-                    if (worldgenlevel.getBlockState(blockpos$mutableblockpos).getMaterial().isReplaceable() && blockstate.hasProperty(SnowyDirtBlock.SNOWY)) {
+                    BlockState state = worldgenlevel.getBlockState(blockpos$mutableblockpos);
+                    if (state.getMaterial().isReplaceable() && blockstate.is(BlockTags.DIRT)) {
                         worldgenlevel.setBlock(blockpos$mutableblockpos, Blocks.SNOW.defaultBlockState(), UPDATE_ALL);
-                        worldgenlevel.setBlock(blockpos$mutableblockpos1, blockstate.setValue(SnowyDirtBlock.SNOWY, Boolean.valueOf(true)), 2);
+                        if (blockstate.hasProperty(SnowyDirtBlock.SNOWY)) {
+                            worldgenlevel.setBlock(blockpos$mutableblockpos1, blockstate.setValue(SnowyDirtBlock.SNOWY, Boolean.valueOf(true)), 2);
+                        }
+                        if (state.getBlock() instanceof DoublePlantBlock) {
+                            worldgenlevel.setBlock(blockpos$mutableblockpos.above(), Blocks.AIR.defaultBlockState(), UPDATE_ALL);
+                        }
                     }
                 }
             }
